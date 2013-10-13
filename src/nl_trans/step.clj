@@ -313,7 +313,8 @@
 (defn calc-one-step-aux [n pic base]
   (let [line (mk-line)
         points (gen-points n)
-        ys (calc-y line points)
+        ys (map calc-f points)
+        ys-n (gen-noised-ys ys)
         [neg-points pos-points] (split-points ys points)
         [wr0 wr1 wr2 :as res-w] (reg ys points)
         _ (nl-trans.misc/log-val "res-w" res-w)
@@ -323,19 +324,20 @@
         _ (plot-one-res-square pic line neg-points pos-points base-reg res-line)
         ein (e-in line res-line points)
         _ (nl-trans.misc/log-val "e-in" ein)
-        eout (e-out line res-line n)
-        _ (nl-trans.misc/log-val "e-out" eout)
+        ;; eout (e-out line res-line n)
+        ;; _ (nl-trans.misc/log-val "e-out" eout)
         diff-p (calc-diff-prob line res-line)
         _ (nl-trans.misc/log-val "diff p" diff-p)
-        [pla-iters [wp0 wp1 wp2] :as pla-res] (pla res-w ys points)
-        _ (nl-trans.misc/log-val "pla res" pla-res)
-        res-line-pla (normalize wp1 wp2 wp0)
-        base-pla (apply str [base "-pla"])
-        _ (plot-one-res-square pic line neg-points pos-points
-                               base-pla
-                               res-line-pla)
+        ;; [pla-iters [wp0 wp1 wp2] :as pla-res] (pla res-w ys points)
+        ;; _ (nl-trans.misc/log-val "pla res" pla-res)
+        ;; res-line-pla (normalize wp1 wp2 wp0)
+        ;; base-pla (apply str [base "-pla"])
+        ;; _ (plot-one-res-square pic line neg-points pos-points
+        ;;                        base-pla
+        ;;                        res-line-pla)
         ]
-    [ein eout diff-p pla-iters]
+    ;; [ein eout diff-p pla-iters]
+    [ein diff-p]
     )
   )
 
@@ -350,15 +352,16 @@
               (calc-one-step n pic base i))
         _ (nl-trans.misc/log-val "all step res" res)
         sum-e-in (reduce + (map first res))
-        sum-e-out (reduce + (map second res))
-        sum-probs (reduce + (map #(get % 2) res))
-        sum-iters (reduce + (map #(get % 3) res))
+        ;; sum-e-out (reduce + (map second res))
+        sum-probs (reduce + (map #(get % 1) res)) ;; 
+        ;; sum-iters (reduce + (map #(get % 3) res))
         avg-e-in (float (/ sum-e-in cnt))
-        avg-e-out (float (/ sum-e-out cnt))
+        ;; avg-e-out (float (/ sum-e-out cnt))
         avg-probs (float (/ sum-probs cnt))
-        avg-iters (float (/ sum-iters cnt))
+        ;; avg-iters (float (/ sum-iters cnt))
         ]
-    [avg-e-in avg-e-out avg-probs avg-iters]
+    ;; [avg-e-in avg-e-out avg-probs avg-iters]
+    [avg-e-in avg-probs]
     )
   )
 
