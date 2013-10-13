@@ -313,8 +313,9 @@
 (defn calc-one-step-aux [n pic base]
   (let [line (mk-line)
         points (gen-points n)
-        ys (map calc-f points)
-        ys-n (gen-noised-ys ys)
+        ys-pure (map calc-f points)
+        ys-noise (gen-noised-ys ys-pure)
+        ys ys-noise
         [neg-points pos-points] (split-points ys points)
         [wr0 wr1 wr2 :as res-w] (reg ys points)
         _ (nl-trans.misc/log-val "res-w" res-w)
