@@ -325,10 +325,16 @@
 (defn e-in [orig-line res-line points]
   (e-aux orig-line res-line points))
 
-(defn e-out [orig-line res-line n0]
-  (let [n (* n0 10)
-        points (gen-points n)]
-    (e-aux orig-line res-line points)))
+(defn e-out-nl [w]
+  (let [
+        n 1000
+        points (gen-points n)
+        ys-pure (map calc-f points)
+        ys-noise (gen-noised-ys ys-pure)
+        ys ys-noise
+        ys-g (map calc-f-nl points)
+        ]
+    ))
 
 (defn log-zero-w [[w0 w1 w2] line ys points]
   (cond
@@ -357,8 +363,8 @@
         _ (plot-one-res-square pic line neg-points pos-points base-reg res-line)
         ein (e-in line res-line points)
         _ (nl-trans.misc/log-val "e-in" ein)
-        ;; eout (e-out line res-line n)
-        ;; _ (nl-trans.misc/log-val "e-out" eout)
+        eout (e-out-nl res-wn)
+        _ (nl-trans.misc/log-val "e-out" eout)
         diff-p (calc-diff-prob line res-line)
         _ (nl-trans.misc/log-val "diff p" diff-p)
         ;; [pla-iters [wp0 wp1 wp2] :as pla-res] (pla res-w ys points)
