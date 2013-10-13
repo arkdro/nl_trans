@@ -150,6 +150,20 @@
 (defn gen-points [n]
   (repeatedly n mk-point))
 
+(defn calc-f [[x1 x2]]
+  (let [val (+ (* x1 x1)
+               (* x2 x2)
+               (- 0.6))]
+    (if (>= val 0) 1
+        -1)))
+
+(defn flip-sign [limit y]
+  (if (< (rand) limit) (- y)
+      y))
+
+(defn gen-noised-ys [ys]
+  (map #(flip-sign 0.1 %) ys))
+
 (defn calc-one-y2 [[w0 w1 w2]
                    [x1 x2]]
   (let [p (+ (* w0 1)
