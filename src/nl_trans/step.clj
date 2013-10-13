@@ -157,13 +157,14 @@
     (if (>= val 0) 1
         -1)))
 
-(defn calc-f-nl [[x1 x2]]
-  (let [val (+ 1
-               x1
-               x2
-               (* x1 x2)
-               (* x1 x1)
-               (* x2 x2)
+(defn calc-f-nl [[x1 x2]
+                 [w0 w1 w2 w3 w4 w5]]
+  (let [val (+ (* w0 1)
+               (* w1 x1)
+               (* w2 x2)
+               (* w3 x1 x2)
+               (* w4 x1 x1)
+               (* w5 x2 x2)
                )]
     (if (>= val 0) 1
         -1)))
