@@ -157,6 +157,17 @@
     (if (>= val 0) 1
         -1)))
 
+(defn calc-f-nl [[x1 x2]]
+  (let [val (+ 1
+               x1
+               x2
+               (* x1 x2)
+               (* x1 x1)
+               (* x2 x2)
+               )]
+    (if (>= val 0) 1
+        -1)))
+
 (defn flip-sign [limit y]
   (if (< (rand) limit) (- y)
       y))
