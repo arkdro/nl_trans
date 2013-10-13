@@ -224,6 +224,22 @@
         w (incanter.core/mmult dagger y-m)]
     (incanter.core/to-vect w)))
 
+(defn mk-one-nl-point [[x1 x2]]
+  [1
+   x1
+   x2
+   (* x1 x2)
+   (* x1 x1)
+   (* x2 x2)])
+
+(defn reg-nl-aux [ys points]
+  (let [b-points (map mk-one-nl-point points)
+        matrix (incanter.core/matrix b-points)
+        dagger (pseudo-inverse matrix)
+        y-m (incanter.core/matrix ys)
+        w (incanter.core/mmult dagger y-m)]
+    (incanter.core/to-vect w)))
+
 (defn reg-aux [i ys points]
   (let [_ (if (> i 0) (nl-trans.misc/log-val "reg-aux, i" i))
         _ (if (> i 10) (nl-trans.misc/log-val "reg-aux, i" i "ys" "points" points))
@@ -235,6 +251,9 @@
 
 (defn reg [ys points]
   (reg-aux 0 ys points))
+
+(defn reg-nl [ys points]
+  (reg-nl-aux ys points))
 
 (defn is-misclassified [[w0 w1 w2 :as w]
                         [y
@@ -330,7 +349,8 @@
         ys ys-noise
         [neg-points pos-points] (split-points ys points)
         [wr0 wr1 wr2 :as res-w] (reg ys points)
-        _ (nl-trans.misc/log-val "res-w" res-w)
+        [wn0 wn1 wn2 wn3 wn4 wn5 :as res-wn] (reg-nl ys points)
+        _ (nl-trans.misc/log-val "res-w" res-w "res-wn" res-wn)
         _ (log-zero-w res-w line ys points)
         res-line (normalize wr1 wr2 wr0)
         base-reg (apply str [base "-reg"])
@@ -350,7 +370,7 @@
         ;;                        res-line-pla)
         ]
     ;; [ein eout diff-p pla-iters]
-    [ein diff-p]
+    [ein diff-p res-wn]
     )
   )
 
@@ -367,14 +387,18 @@
         sum-e-in (reduce + (map first res))
         ;; sum-e-out (reduce + (map second res))
         sum-probs (reduce + (map #(get % 1) res)) ;; 
+        sum-w-nl (incanter.core/to-vect
+                  (reduce incanter.core/plus
+                          (map #(get % 2) res)))
         ;; sum-iters (reduce + (map #(get % 3) res))
         avg-e-in (float (/ sum-e-in cnt))
         ;; avg-e-out (float (/ sum-e-out cnt))
         avg-probs (float (/ sum-probs cnt))
+        avg-w-nl (map #(float (/ % cnt)) sum-w-nl)
         ;; avg-iters (float (/ sum-iters cnt))
         ]
     ;; [avg-e-in avg-e-out avg-probs avg-iters]
-    [avg-e-in avg-probs]
+    [avg-e-in avg-probs avg-w-nl]
     )
   )
 
