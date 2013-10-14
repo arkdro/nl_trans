@@ -310,6 +310,37 @@
             delta (calc-diff-prob-aux n 0 line res-line)]
         (float (/ delta n)))))
 
+(defn diff [a b]
+  (if (= a b) 0
+      1))
+
+(defn modify-acc [acc y0 gys]
+  (let [joined (map #(vec [%1 %2]) acc gys)]
+    (map #(+
+           (first %)
+           (diff y0 (second %)))
+         joined)))
+
+(defn calc-diff-prob-nl-aux [i acc w0 gws]
+  (if (= i 0) acc
+      (let [point (mk-point)
+            _ (println "i" i)
+            y0 (calc-f-nl point w0)
+            gys (map #(calc-f-nl point %) gws)
+            new-acc (modify-acc acc y0 gys)
+            ;; _ (println "y0" y0 "gys" gys "new acc" new-acc)
+            ]
+        (recur (dec i) new-acc w0 gws))))
+
+(defn calc-diff-prob-nl [w0 gws]
+  (let [n 10000
+        acc0 (repeat (count gws) 0)
+        _ (println "acc0" acc0)
+        deltas (calc-diff-prob-nl-aux n acc0 w0 gws)
+        _ (println "deltas" deltas)
+        ]
+    (map #(float (/ % n)) deltas)))
+
 (defn mismatched-y [[y0 y1]]
   (not (= y0 y1)))
 
@@ -344,6 +375,26 @@
                       "\nline:" line
                       "\nys" ys
                       "\npoints" points)
+    )
+  )
+
+(defn run-one-g [w points]
+  (map #(calc-f-nl % w) points)
+  )
+
+(defn choose-g [n res-wn]
+  (let [points (gen-points n)
+        ys-pure (map calc-f points)
+        ys-noise (gen-noised-ys ys-pure)
+        ys ys-noise
+        gws [[-1 -0.05 0.08 0.13 1.5 1.5]
+             [-1 -0.05 0.08 0.13 1.5 15]
+             [-1 -0.05 0.08 0.13 15 1.5]
+             [-1 -1.5  0.08 0.13 0.05 0.05]
+             [-1 -0.05 0.08 1.5  0.15 0.15]]
+        diff-ps (calc-diff-prob-nl res-wn gws)
+        ]
+    diff-ps
     )
   )
 
