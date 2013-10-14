@@ -363,7 +363,7 @@
         ys-pure (map calc-f points)
         ys-noise (gen-noised-ys ys-pure)
         ys ys-noise
-        ys-g (map calc-f-nl points)
+        ys-g (map #(calc-f-nl % w) points)
         ]
     ))
 
