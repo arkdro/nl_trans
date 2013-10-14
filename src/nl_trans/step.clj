@@ -414,10 +414,12 @@
         _ (plot-one-res-square pic line neg-points pos-points base-reg res-line)
         ein (e-in line res-line points)
         _ (nl-trans.misc/log-val "e-in" ein)
-        eout (e-out-nl res-wn)
-        _ (nl-trans.misc/log-val "e-out" eout)
-        diff-p (calc-diff-prob line res-line)
-        _ (nl-trans.misc/log-val "diff p" diff-p)
+        ;; eout (e-out-nl res-wn)
+        ;; _ (nl-trans.misc/log-val "e-out" eout)
+        ;; diff-p (calc-diff-prob line res-line)
+        ;; _ (nl-trans.misc/log-val "diff p" diff-p)
+        diff-ps (choose-g n res-wn)
+        _ (nl-trans.misc/log-val "diff ps" diff-ps)
         ;; [pla-iters [wp0 wp1 wp2] :as pla-res] (pla res-w ys points)
         ;; _ (nl-trans.misc/log-val "pla res" pla-res)
         ;; res-line-pla (normalize wp1 wp2 wp0)
@@ -427,7 +429,7 @@
         ;;                        res-line-pla)
         ]
     ;; [ein eout diff-p pla-iters]
-    [ein diff-p res-wn]
+    [ein diff-ps res-wn]
     )
   )
 
@@ -443,7 +445,13 @@
         _ (nl-trans.misc/log-val "all step res" res)
         sum-e-in (reduce + (map first res))
         ;; sum-e-out (reduce + (map second res))
-        sum-probs (reduce + (map #(get % 1) res)) ;; 
+        _ (println "res" res)
+        sep-probs (map #(get % 1) res)
+        _ (println "sep probs" sep-probs)
+        sum-probs n
+        ;; _ (Thread/sleep 2000)
+        ;; sum-probs (incanter.core/plus sep-probs)
+        ;; _ (println "sum probs" sum-probs)
         sum-w-nl (incanter.core/to-vect
                   (reduce incanter.core/plus
                           (map #(get % 2) res)))
