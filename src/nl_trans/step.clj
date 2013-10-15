@@ -174,7 +174,7 @@
       y))
 
 (defn gen-noised-ys [ys]
-  (map #(flip-sign 0.1 %) ys))
+  (doall (map #(flip-sign 0.1 %) ys)))
 
 (defn calc-one-y2 [[w0 w1 w2]
                    [x1 x2]]
@@ -325,7 +325,7 @@
   (if (= i 0) acc
       (let [point (mk-point)
             y0 (calc-f-nl point w0)
-            gys (map #(calc-f-nl point %) gws)
+            gys (doall (map #(calc-f-nl point %) gws))
             new-acc (doall (modify-acc acc y0 gys))
             ]
         (recur (dec i) new-acc w0 gws))))
