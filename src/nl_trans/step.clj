@@ -443,18 +443,14 @@
         ;; sum-e-out (reduce + (map second res))
         _ (println "res" res)
         sep-probs (map #(get % 1) res)
-        _ (println "sep probs" sep-probs)
-        sum-probs n
         ;; _ (Thread/sleep 2000)
-        ;; sum-probs (incanter.core/plus sep-probs)
-        ;; _ (println "sum probs" sum-probs)
+        sum-probs (incanter.core/to-vect (reduce incanter.core/plus sep-probs))
         sum-w-nl (incanter.core/to-vect
                   (reduce incanter.core/plus
                           (map #(get % 2) res)))
         ;; sum-iters (reduce + (map #(get % 3) res))
         avg-e-in (float (/ sum-e-in cnt))
-        ;; avg-e-out (float (/ sum-e-out cnt))
-        avg-probs (float (/ sum-probs cnt))
+        avg-probs (map #(float (/ % cnt)) sum-probs)
         avg-w-nl (map #(float (/ % cnt)) sum-w-nl)
         ;; avg-iters (float (/ sum-iters cnt))
         ]
