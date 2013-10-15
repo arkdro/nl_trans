@@ -324,20 +324,16 @@
 (defn calc-diff-prob-nl-aux [i acc w0 gws]
   (if (= i 0) acc
       (let [point (mk-point)
-            _ (println "i" i)
             y0 (calc-f-nl point w0)
             gys (map #(calc-f-nl point %) gws)
             new-acc (doall (modify-acc acc y0 gys))
-            ;; _ (println "y0" y0 "gys" gys "new acc" new-acc)
             ]
         (recur (dec i) new-acc w0 gws))))
 
 (defn calc-diff-prob-nl [w0 gws]
   (let [n 10000
         acc0 (repeat (count gws) 0)
-        _ (println "acc0" acc0)
         deltas (calc-diff-prob-nl-aux n acc0 w0 gws)
-        _ (println "deltas" deltas)
         ]
     (doall (map #(float (/ % n)) deltas))))
 
