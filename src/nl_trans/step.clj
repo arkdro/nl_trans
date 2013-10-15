@@ -380,7 +380,7 @@
 
 (defn choose-g [n res-wn]
   (let [points (gen-points n)
-        ys-pure (map calc-f points)
+        ys-pure (doall (map calc-f points))
         ys-noise (gen-noised-ys ys-pure)
         ys ys-noise
         gws [[-1 -0.05 0.08 0.13 1.5 1.5]
