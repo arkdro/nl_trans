@@ -327,7 +327,7 @@
             _ (println "i" i)
             y0 (calc-f-nl point w0)
             gys (map #(calc-f-nl point %) gws)
-            new-acc (modify-acc acc y0 gys)
+            new-acc (doall (modify-acc acc y0 gys))
             ;; _ (println "y0" y0 "gys" gys "new acc" new-acc)
             ]
         (recur (dec i) new-acc w0 gws))))
@@ -339,7 +339,7 @@
         deltas (calc-diff-prob-nl-aux n acc0 w0 gws)
         _ (println "deltas" deltas)
         ]
-    (map #(float (/ % n)) deltas)))
+    (doall (map #(float (/ % n)) deltas))))
 
 (defn mismatched-y [[y0 y1]]
   (not (= y0 y1)))
