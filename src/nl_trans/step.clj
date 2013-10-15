@@ -352,6 +352,11 @@
 (defn e-in [orig-line res-line points]
   (e-aux orig-line res-line points))
 
+(defn e-out [orig-line res-line n0]
+  (let [n (* n0 10)
+        points (gen-points n)]
+    (e-aux orig-line res-line points)))
+
 (defn e-out-nl [w]
   (let [
         n 1000
@@ -410,8 +415,9 @@
         _ (plot-one-res-square pic line neg-points pos-points base-reg res-line)
         ein (e-in line res-line points)
         _ (nl-trans.misc/log-val "e-in" ein)
+        eout (e-out line res-line n)
+        _ (nl-trans.misc/log-val "e-out" eout)
         ;; eout (e-out-nl res-wn)
-        ;; _ (nl-trans.misc/log-val "e-out" eout)
         ;; diff-p (calc-diff-prob line res-line)
         ;; _ (nl-trans.misc/log-val "diff p" diff-p)
         diff-ps (choose-g n res-wn)
@@ -425,7 +431,7 @@
         ;;                        res-line-pla)
         ]
     ;; [ein eout diff-p pla-iters]
-    [ein diff-ps res-wn]
+    [ein diff-ps res-wn eout]
     )
   )
 
@@ -440,8 +446,7 @@
               (calc-one-step n pic base i))
         _ (nl-trans.misc/log-val "all step res" res)
         sum-e-in (reduce + (map first res))
-        ;; sum-e-out (reduce + (map second res))
-        _ (println "res" res)
+        sum-e-out (reduce + (map #(get % 3) res))
         sep-probs (map #(get % 1) res)
         ;; _ (Thread/sleep 2000)
         sum-probs (incanter.core/to-vect (reduce incanter.core/plus sep-probs))
@@ -450,12 +455,13 @@
                           (map #(get % 2) res)))
         ;; sum-iters (reduce + (map #(get % 3) res))
         avg-e-in (float (/ sum-e-in cnt))
+        avg-e-out (float (/ sum-e-out cnt))
         avg-probs (map #(float (/ % cnt)) sum-probs)
         avg-w-nl (map #(float (/ % cnt)) sum-w-nl)
         ;; avg-iters (float (/ sum-iters cnt))
         ]
     ;; [avg-e-in avg-e-out avg-probs avg-iters]
-    [avg-e-in avg-probs avg-w-nl]
+    [avg-e-in avg-probs avg-w-nl avg-e-out]
     )
   )
 
