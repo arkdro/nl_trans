@@ -325,7 +325,8 @@
   (if (= i 0) acc
       (let [point (mk-point)
             y0 (calc-f-nl point w0)
-            gys (doall (map #(calc-f-nl point %) gws))
+            gys-pure (doall (map #(calc-f-nl point %) gws))
+            gys (map #(first (gen-noised-ys [%])) gys-pure)
             new-acc (doall (modify-acc acc y0 gys))
             ]
         (recur (dec i) new-acc w0 gws))))
